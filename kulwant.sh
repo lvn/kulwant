@@ -1,8 +1,14 @@
 #!/bin/bash
 
+get_status_msg () {
+  status=$1
+  echo ''
+}
+
 build_status_line () {
   status=$1
-  echo 'HTTP/1.1 $status'
+  status_msg=$(get_status_msg $status)
+  echo 'HTTP/1.1 $status $status_msg'
 }
 
 build_headers () {
