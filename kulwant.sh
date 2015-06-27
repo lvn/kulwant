@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 build_status_line () {
   status=$1
