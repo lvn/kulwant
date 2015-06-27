@@ -6,8 +6,9 @@ build_status_line () {
 }
 
 build_headers () {
+  headers=$1
   for arg in $@; do
-    echo $arg
+    echo "$arg: ${headers[\"$arg\"]}"
   done
   echo ''
 }
