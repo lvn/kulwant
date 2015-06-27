@@ -8,12 +8,12 @@ get_status_msg () {
 build_status_line () {
   status=$1
   status_msg=$(get_status_msg $status)
-  echo 'HTTP/1.1 $status $status_msg'
+  echo 'HTTP/1.1 $status $status_msg'is
 }
 
 build_headers () {
   headers=$1
-  for arg in $@; do
+  for arg in $1; do
     echo "$arg: ${headers[\"$arg\"]}"
   done
   echo ''
@@ -27,8 +27,8 @@ respond () {
 }
 
 respond_err () {
-  status_code=$1
-  build_status_line $1
+  status=$1
+  build_status_line $status
   build_headers
 }
 
