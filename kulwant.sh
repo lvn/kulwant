@@ -8,7 +8,7 @@ get_status_msg () {
 build_status_line () {
   status=$1
   status_msg=$(get_status_msg $status)
-  echo 'HTTP/1.1 $status $status_msg'is
+  echo 'HTTP/1.1 $status $status_msg'
 }
 
 build_headers () {
