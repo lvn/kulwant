@@ -14,7 +14,7 @@ get_status_msg () {
 build_status_line () {
   status=$1
   status_msg=$(get_status_msg $status)
-  echo 'HTTP/1.1 $status $status_msg'\
+  echo "HTTP/1.1 $status $status_msg"
 }
 
 parse_headers () {
@@ -40,6 +40,7 @@ respond_err () {
   status=$1
   build_status_line $status
   build_headers
+  echo "There was an error with your request"
 }
 
 serve_file () {
