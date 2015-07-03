@@ -7,5 +7,5 @@ A very, very simple webserver built in bash, using `netcat` for network I/O.
 
 ### Instructions
 ```shell
-./kulwant.sh PORT path/to/index
+./kulwant.sh PORT DIRECTORY_TO_SERVE
 ```
