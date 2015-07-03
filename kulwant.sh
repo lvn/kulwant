@@ -1,5 +1,11 @@
 #!/bin/bash
 
+cleanup () {
+  serve=0
+  rm -r $KULWANT_TMP
+  exit 0
+}
+
 get_status_msg () {
   status=$1
   echo ''
@@ -8,7 +14,11 @@ get_status_msg () {
 build_status_line () {
   status=$1
   status_msg=$(get_status_msg $status)
-  echo 'HTTP/1.1 $status $status_msg'
+  echo 'HTTP/1.1 $status $status_msg'\
+}
+
+parse_headers () {
+  echo ''
 }
 
 build_headers () {
@@ -32,20 +42,51 @@ respond_err () {
   build_headers
 }
 
-serve_page () {
+serve_file () {
   path=$1
-  if [ -r $path ]; then
+  path_index="${path%%\/}/index.html"
+  if [ -r $path ] && [ -f $path ]; then
     content=$(cat $path)
+    respond "$content"
+  elif [ -r $path_index ] && [ -f $path_index ]; then
+    content=$(cat $path_index)
     respond "$content"
   else
     respond_err 404
   fi
 }
 
+parse_request () {
+  reqline=(`echo $1`)  # hack: this will split the reqline by spaces.
+  method=${reqline[0]}
+  _path=${reqline[1]}
+  path="$serve_root/${_path##/}"
+
+  # TODO: parse headers and stuff
+}
+
+handle_request () {
+  read req
+  parse_request "$req"
+
+  # handle route
+  serve_file $path
+}
+
+
+trap "cleanup" SIGINT
+
 port=$1
-path=$2
+serve_root=$2
 serve=1
-trap "serve=0" SIGINT
+
+KULWANT_TMP="/tmp/kulwant"
+[[ -d "$KULWANT_TMP" ]] || mkdir "$KULWANT_TMP"
+req_fifo="$KULWANT_TMP$(date +%s)$$"
+mkfifo $req_fifo
+
 while [ $serve -eq 1 ]; do
-  serve_page $path | nc -l $port
+  cat $req_fifo | nc -l $port | (
+    handle_request > $req_fifo
+  )
 done
