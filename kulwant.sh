@@ -32,26 +32,28 @@ build_headers () {
 respond () {
   content=$1
   build_status_line 200
-  build_headers
+  build_headers $headers
   echo $content
 }
 
 respond_err () {
   status=$1
+  headers=$2
   build_status_line $status
-  build_headers
+  build_headers $headers
   echo "There was an error with your request"
 }
 
 serve_file () {
   path=$1
+  headers=$2
   path_index="${path%%\/}/index.html"
   if [ -r $path ] && [ -f $path ]; then
     content=$(cat $path)
     respond "$content"
   elif [ -r $path_index ] && [ -f $path_index ]; then
     content=$(cat $path_index)
-    respond "$content"
+    respond "$content" $headers
   else
     respond_err 404
   fi
@@ -71,7 +73,7 @@ handle_request () {
   parse_request "$req"
 
   # handle route
-  serve_file $path
+  serve_file $path $headers
 }
 
 
