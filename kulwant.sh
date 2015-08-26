@@ -33,7 +33,7 @@ respond () {
   content=$1
   build_status_line 200
   build_headers $headers
-  echo $content
+  echo -e $content
 }
 
 respond_err () {
@@ -53,6 +53,9 @@ serve_file () {
     respond "$content"
   elif [ -r $path_index ] && [ -f $path_index ]; then
     content=$(cat $path_index)
+    respond "$content" $headers
+  elif [ -d $path ]; then
+    content="Directory $path contents: \n"$(ls -1A $path)
     respond "$content" $headers
   else
     respond_err 404
