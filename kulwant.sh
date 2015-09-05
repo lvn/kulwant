@@ -8,7 +8,7 @@ cleanup () {
 
 get_status_msg () {
   status=$1
-  echo ''
+  echo 'OK'
 }
 
 build_status_line () {
